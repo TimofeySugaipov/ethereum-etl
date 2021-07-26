@@ -73,6 +73,8 @@ class ExportBlocksJob(BaseJob):
     def _export_batch(self, block_number_batch):
         blocks_rpc = list(generate_get_block_by_number_json_rpc(block_number_batch, self.export_transactions))
         response = self.batch_web3_provider.make_batch_request(json.dumps(blocks_rpc))
+        if type(response) == type({}):
+            response = [response]
         results = rpc_response_batch_to_results(response)
         blocks = [self.block_mapper.json_dict_to_block(result) for result in results]
 
